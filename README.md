@@ -2,7 +2,7 @@
 BIER: Brew Infrastructure and Equipment netwoRk
 -----------------------------------------
 To install the BIER plug-in on LibreNMS
-- Copy print-interface-bier.inc.php in /.../librenms/includes/html/
+- Copy print-interface-bier.inc.php in /.../librenms/includes/html/plugins/BIER/
 - Create BIER link for equipment ports tab (still to be coded)
 - Edit file /.../librenms/includes/html/pages/device/ports.inc.php
 - Line 98 to 108 insert below + elseif {... instead of "else"
