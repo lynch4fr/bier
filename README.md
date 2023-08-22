@@ -17,7 +17,7 @@ To install the BIER plug-in on LibreNMS
                 print_optionbar_end();
                 // Si on clique sur Bier
                 if ($vars['view'] == "bier") {
-                    include 'includes/html/print-interface-bier.inc.php';
+                    include 'html/plugins/BIER/print-interface-bier.inc.php';
                 }
        //FIN AJOUT DE CODE
   
