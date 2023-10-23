@@ -60,7 +60,7 @@ foreach ($ports as $port) {
 if ($unit1PortCount > 0) {
     $j = 0;
     $j1 = $j;
-    echo '<div style="text-align: center; width: 100%; background-color: rgb(0, 138, 12);">';
+    echo '<div style="text-align: center; width: 100%; background-color: rgb(44, 202, 44);">';
     echo '<span style="color: white; font-weight: bold; font-size: 20px;">';
     echo "Number of 'Port' occurrences in 'Unit 1': " . $unit1PortCount . "<br>";
     echo '</div>';
@@ -86,7 +86,7 @@ if ($unit1PortCount > 0) {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
 		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 		}else{	
-			echo '<td>' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 			}
 		}
 // Affiche le NOM du port du HAUT
@@ -302,7 +302,7 @@ if ($unit1PortCount > 0) {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
 		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 		}else{	
-			echo '<td>' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 			}
 		}
             }
@@ -315,7 +315,7 @@ if ($unit1PortCount > 0) {
 // UNIT 2 //
 ////////////
     echo "<br>";
-    echo '<div style="text-align: center; width: 100%; background-color: rgb(0, 138, 12);">';
+    echo '<div style="text-align: center; width: 100%; background-color: rgb(44, 202, 44);">';
     echo '<span style="color: white; font-weight: bold; font-size: 20px;">';
     echo "Number of 'Port' occurrences in 'Unit 2': " . $unit2PortCount . "<br>";
     echo '</div>';
@@ -343,7 +343,7 @@ if ($unit2PortCount != 0 ){ // START IF UNIT
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
 		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 		}else{	
-			echo '<td>' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 			}
 		}
 // Affiche le NOM du port du HAUT
@@ -542,7 +542,7 @@ if ($unit2PortCount != 0 ){ // START IF UNIT
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
 		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 		}else{	
-			echo '<td>' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 			}
 		}
             }
@@ -556,7 +556,7 @@ if ($unit2PortCount != 0 ){ // START IF UNIT
 // UNIT 3 //
 ////////////
     echo "<br>";
-    echo '<div style="text-align: center; width: 100%; background-color: rgb(0, 138, 12);">';
+    echo '<div style="text-align: center; width: 100%; background-color: rgb(44, 202, 44);">';
     echo '<span style="color: white; font-weight: bold; font-size: 20px;">';
     echo "Number of 'Port' occurrences in 'Unit 3': " . $unit3PortCount . "<br>";
     echo '</div>';
@@ -584,7 +584,7 @@ if ($unit3PortCount != 0 ){ // START IF UNIT
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
 		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 		}else{	
-			echo '<td>' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 			}
 		}
 // Affiche le NOM du port du HAUT
@@ -783,7 +783,7 @@ if ($unit3PortCount != 0 ){ // START IF UNIT
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
 		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 		}else{	
-			echo '<td>' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 			}
 		}
             }
@@ -797,7 +797,7 @@ if ($unit3PortCount != 0 ){ // START IF UNIT
 // UNIT 4 //
 ////////////
     echo "<br>";
-    echo '<div style="text-align: center; width: 100%; background-color: rgb(0, 138, 12);">';
+    echo '<div style="text-align: center; width: 100%; background-color: rgb(44, 202, 44);">';
     echo '<span style="color: white; font-weight: bold; font-size: 20px;">';
     echo "Number of 'Port' occurrences in 'Unit 4': " . $unit4PortCount . "<br>";
     echo '</div>';
@@ -825,7 +825,7 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
 		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 		}else{	
-			echo '<td>' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 			}
 		}
 // Affiche le NOM du port du HAUT
@@ -1024,7 +1024,7 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
 		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 		}else{	
-			echo '<td>' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 			}
 		}
             }
@@ -1040,7 +1040,7 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 // UNIT=0 ALONE //
 /////////////////
     echo "<br>";
-    echo '<div style="text-align: center; width: 100%; background-color: rgb(0, 138, 12);">';
+    echo '<div style="text-align: center; width: 100%; background-color: rgb(44, 202, 44);">';
     echo '<span style="color: white; font-weight: bold; font-size: 20px;">';
     echo "Number of 'Port' occurrences in 'Unit 0': " . $unit0PortCount . "<br>";
     echo '</div>';
@@ -1066,7 +1066,7 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
 		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 		}else{	
-			echo '<td>' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 			}
 		}
 // Affiche le NOM du port du HAUT
@@ -1254,7 +1254,7 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
 		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 		}else{	
-			echo '<td>' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
 			}
 	    }
         }
