@@ -78,7 +78,7 @@ if ($unit1PortCount > 0) {
 	            $ifName = str_replace(" Port: ", "/", $ifName);
 		    $port=$ports[$j];
 	            $port['hostname'] = $device['hostname'];
-                    #echo '<td>' . generate_port_link($port, $ifName). "</td>";
+                    echo '<td>' . generate_port_link($port, $ifName). "</td>";
         	}else{
 		$port=$ports[$j];
 	        $port['hostname'] = $device['hostname'];
@@ -110,12 +110,14 @@ if ($unit1PortCount > 0) {
 	//DEBUG	echo " | ";
 // Couleur du port
 	$vlan = implode(', ', $vlans);
-	if (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
+	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
+	$vlanColor = 'rgb(0, 255, 0)';
+	}elseif (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
 	$vlanColor = 'rgb(255, 149, 14)';
-	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
-	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/1[0-2][0-9][0-9]/', $vlan)) { // Vlan fx-per 
 	$vlanColor = 'rgb(71, 184, 184)';
+	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
+	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/4[2]/', $vlan)) { // Vlan corefipe 
 	$vlanColor = 'rgb(238, 171, 228)';
 	}elseif (preg_match('/4[4]/', $vlan) || preg_match('/1[6]/',$vlan)) { // Vlan mfp, imp
@@ -199,12 +201,14 @@ if ($unit1PortCount > 0) {
 	$vlan_count = count($vlans);
 //Couleur du port
 	$vlan = implode(', ', $vlans);
-	if (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
+	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
+	$vlanColor = 'rgb(0, 255, 0)';
+	}elseif (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
 	$vlanColor = 'rgb(255, 149, 14)';
-	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
-	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/1[0-2][0-9][0-9]/', $vlan)) { // Vlan fx-per 
 	$vlanColor = 'rgb(71, 184, 184)';
+	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
+	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/4[2]/', $vlan)) { // Vlan corefipe 
 	$vlanColor = 'rgb(238, 171, 228)';
 	}elseif (preg_match('/2[3,6]/', $vlan) || preg_match('/1[5]/', $vlan) || preg_match('/1[6][0]/', $vlan)) { // Vlan gtb, video, visio, heb
@@ -300,9 +304,9 @@ if ($unit1PortCount > 0) {
 	        $port['hostname'] = $device['hostname'];
                 if ($port->ifAdminStatus == 'down') {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
-		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
 		}else{	
-			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
 			}
 		}
             }
@@ -360,12 +364,14 @@ if ($unit2PortCount != 0 ){ // START IF UNIT
 #	echo "<td>";
 //Couleur du port
 	$vlan = implode(', ', $vlans);
-	if (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
+	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
+	$vlanColor = 'rgb(0, 255, 0)';
+	}elseif (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
 	$vlanColor = 'rgb(255, 149, 14)';
-	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
-	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/1[0-2][0-9][0-9]/', $vlan)) { // Vlan fx-per 
 	$vlanColor = 'rgb(71, 184, 184)';
+	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
+	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/4[2]/', $vlan)) { // Vlan corefipe 
 	$vlanColor = 'rgb(238, 171, 228)';
 	}elseif (preg_match('/2[3,6]/', $vlan) || preg_match('/1[5]/', $vlan) || preg_match('/1[6][0]/', $vlan)) { // Vlan gtb, video, visio, heb
@@ -447,12 +453,14 @@ if ($unit2PortCount != 0 ){ // START IF UNIT
 #	echo "<td>";
 //Couleur du port
 	$vlan = implode(', ', $vlans);
-	if (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
+	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
+	$vlanColor = 'rgb(0, 255, 0)';
+	}elseif (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
 	$vlanColor = 'rgb(255, 149, 14)';
-	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
-	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/1[0-2][0-9][0-9]/', $vlan)) { // Vlan fx-per 
 	$vlanColor = 'rgb(71, 184, 184)';
+	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
+	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/4[2]/', $vlan)) { // Vlan corefipe 
 	$vlanColor = 'rgb(238, 171, 228)';
 	}elseif (preg_match('/2[3,6]/', $vlan) || preg_match('/1[5]/', $vlan) || preg_match('/1[6][0]/', $vlan)) { // Vlan gtb, video, visio, heb
@@ -540,9 +548,9 @@ if ($unit2PortCount != 0 ){ // START IF UNIT
 	        $port['hostname'] = $device['hostname'];
                 if ($port->ifAdminStatus == 'down') {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
-		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
 		}else{	
-			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
 			}
 		}
             }
@@ -601,12 +609,14 @@ if ($unit3PortCount != 0 ){ // START IF UNIT
 #	echo "<td>";
 //Couleur du port
 	$vlan = implode(', ', $vlans);
-	if (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
+	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
+	$vlanColor = 'rgb(0, 255, 0)';
+	}elseif (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
 	$vlanColor = 'rgb(255, 149, 14)';
-	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
-	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/1[0-2][0-9][0-9]/', $vlan)) { // Vlan fx-per 
 	$vlanColor = 'rgb(71, 184, 184)';
+	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
+	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/4[2]/', $vlan)) { // Vlan corefipe 
 	$vlanColor = 'rgb(238, 171, 228)';
 	}elseif (preg_match('/2[3,6]/', $vlan) || preg_match('/1[5]/', $vlan) || preg_match('/1[6][0]/', $vlan)) { // Vlan gtb, video, visio, heb
@@ -688,12 +698,14 @@ if ($unit3PortCount != 0 ){ // START IF UNIT
 #	echo "<td>";
 //Couleur du port
 	$vlan = implode(', ', $vlans);
-	if (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
+	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
+	$vlanColor = 'rgb(0, 255, 0)';
+	}elseif (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
 	$vlanColor = 'rgb(255, 149, 14)';
-	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
-	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/1[0-2][0-9][0-9]/', $vlan)) { // Vlan fx-per 
 	$vlanColor = 'rgb(71, 184, 184)';
+	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
+	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/4[2]/', $vlan)) { // Vlan corefipe 
 	$vlanColor = 'rgb(238, 171, 228)';
 	}elseif (preg_match('/2[3,6]/', $vlan) || preg_match('/1[5]/', $vlan) || preg_match('/1[6][0]/', $vlan)) { // Vlan gtb, video, visio, heb
@@ -781,9 +793,9 @@ if ($unit3PortCount != 0 ){ // START IF UNIT
 	        $port['hostname'] = $device['hostname'];
                 if ($port->ifAdminStatus == 'down') {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
-		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
 		}else{	
-			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
 			}
 		}
             }
@@ -842,12 +854,14 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 #	echo "<td>";
 //Couleur du port
 	$vlan = implode(', ', $vlans);
-	if (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
+	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
+	$vlanColor = 'rgb(0, 255, 0)';
+	}elseif (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
 	$vlanColor = 'rgb(255, 149, 14)';
-	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
-	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/1[0-2][0-9][0-9]/', $vlan)) { // Vlan fx-per 
 	$vlanColor = 'rgb(71, 184, 184)';
+	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
+	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/4[2]/', $vlan)) { // Vlan corefipe 
 	$vlanColor = 'rgb(238, 171, 228)';
 	}elseif (preg_match('/2[3,6]/', $vlan) || preg_match('/1[5]/', $vlan) || preg_match('/1[6][0]/', $vlan)) { // Vlan gtb, video, visio, heb
@@ -929,12 +943,14 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 #	echo "<td>";
 //Couleur du port
 	$vlan = implode(', ', $vlans);
-	if (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
+	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
+	$vlanColor = 'rgb(0, 255, 0)';
+	}elseif (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
 	$vlanColor = 'rgb(255, 149, 14)';
-	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
-	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/1[0-2][0-9][0-9]/', $vlan)) { // Vlan fx-per 
 	$vlanColor = 'rgb(71, 184, 184)';
+	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
+	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/4[2]/', $vlan)) { // Vlan corefipe 
 	$vlanColor = 'rgb(238, 171, 228)';
 	}elseif (preg_match('/2[3,6]/', $vlan) || preg_match('/1[5]/', $vlan) || preg_match('/1[6][0]/', $vlan)) { // Vlan gtb, video, visio, heb
@@ -1022,9 +1038,9 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 	        $port['hostname'] = $device['hostname'];
                 if ($port->ifAdminStatus == 'down') {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
-		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
 		}else{	
-			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
 			}
 		}
             }
@@ -1083,12 +1099,14 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 #	echo "<td>";
 //Couleur du port
 	$vlan = implode(', ', $vlans);
-	if (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
+	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
+	$vlanColor = 'rgb(0, 255, 0)';
+	}elseif (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
 	$vlanColor = 'rgb(255, 149, 14)';
-	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
-	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/1[0-2][0-9][0-9]/', $vlan)) { // Vlan fx-per 
 	$vlanColor = 'rgb(71, 184, 184)';
+	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
+	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/4[2]/', $vlan)) { // Vlan corefipe 
 	$vlanColor = 'rgb(238, 171, 228)';
 	}elseif (preg_match('/2[3,6]/', $vlan) || preg_match('/1[5]/', $vlan) || preg_match('/1[6][0]/', $vlan)) { // Vlan gtb, video, visio, heb
@@ -1169,12 +1187,14 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 #	echo "<td>";
 //Couleur du port
 	$vlan = implode(', ', $vlans);
-	if (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
+	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
+	$vlanColor = 'rgb(0, 255, 0)';
+	}elseif (preg_match('/3[0-9][0-9][0-9]/', $vlan)) { //Vlan fx-etu 
 	$vlanColor = 'rgb(255, 149, 14)';
-	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
-	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/1[0-2][0-9][0-9]/', $vlan)) { // Vlan fx-per 
 	$vlanColor = 'rgb(71, 184, 184)';
+	}elseif (preg_match('/4[6-8]/', $vlan) || $vlan == 17) { // Vlan mgmt
+	$vlanColor = 'rgb(230, 255, 0)';
 	}elseif (preg_match('/4[2]/', $vlan)) { // Vlan corefipe 
 	$vlanColor = 'rgb(238, 171, 228)';
 	}elseif (preg_match('/2[3,6]/', $vlan) || preg_match('/1[5]/', $vlan) || preg_match('/1[6][0]/', $vlan)) { // Vlan gtb, video, visio, heb
@@ -1252,9 +1272,9 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 	        $port['hostname'] = $device['hostname'];
                 if ($port->ifAdminStatus == 'down') {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
-		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
 		}else{	
-			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
 			}
 	    }
         }
