@@ -1,6 +1,8 @@
 # bier
 BIER: Brew Infrastructure and Equipment netwoRk
 -----------------------------------------
+Tested on ERS extreme 45xx and 36xx range switches.
+
 To install the BIER plug-in on LibreNMS
 - Copy print-interface-bier.inc.php in /.../librenms/html/plugins/BIER/
 - Create BIER link for equipment ports tab (still to be coded)
