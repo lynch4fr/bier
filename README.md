@@ -3,7 +3,7 @@ Plugins LibreNMS: BIER
 -----------------------------------------
 BIER: Brew Infrastructure and Equipment netwoRk
 -----------------------------------------
-BIER offers a view of your switchs as you were standing in front of your equipment in the rack, i.e. per 50-port switch or 24 ports on 2 rows.
+BIER offers a view of your switchs as you were standing in front of your equipment in the rack, i.e. per 50 ports switch or 24 ports on 2 rows.
 View screenshot 
 
 Tested on ERS extreme 45xx and 36xx range switches.
