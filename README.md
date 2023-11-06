@@ -1,6 +1,9 @@
 # bier
 BIER: Brew Infrastructure and Equipment netwoRk
 -----------------------------------------
+BIER displays your switch as if you were standing in front of the equipment in your rack, i.e. per 50-port switch or 24 ports on 2 rows.
+View screenshot 
+
 Tested on ERS extreme 45xx and 36xx range switches.
 
 To install the BIER plug-in on LibreNMS
