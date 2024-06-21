@@ -17,3 +17,4 @@ To install the BIER plug-in on LibreNMS
        'bier' => \App\Http\Controllers\Device\Tabs\BierController::class
        ...
 - Execute ./validate and ./daily
+- Bier is available via Device/Tab -> Bier or URL : https://librenms.local.fr/device/xyz/bier
