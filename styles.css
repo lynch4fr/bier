@@ -1,0 +1,33 @@
+.interface-updown,
+a.interface-updown,
+a.interface-updown:visited {
+    background-color: white !important;
+}
+
+.interface-upup,
+a.interface-upup {
+    background-color: white !important;
+}
+
+a.interface-upup:hover,
+a.interface-updown:hover,
+a.interface-admindown:hover {
+    background-color: white !important;
+}
+
+.interface-admindown,
+a.list-device-ignored,
+a.interface-admindown,
+a.interface-admindown:visited {
+    background-color: white !important;
+}
+
+.ref-label {
+    font-size: 18px !important;
+    color: black !important;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-align: center;
+    line-height: 1;
+}
