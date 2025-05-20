@@ -14,7 +14,7 @@ To install the BIER plug-in on LibreNMS
 - Edit file /../app/Http/Controllers/DeviceController.php
 - Add line 32
 -      ...
-       'bier' => \App\Http\Controllers\Device\Tabs\BierController::class
+       'bier' => \App\Http\Controllers\Device\Tabs\BierController::class,
        ...
 - Add a custom css file :
   - View : lnms config:get webui.custom_css
