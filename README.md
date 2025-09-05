@@ -11,8 +11,8 @@ Tested on ERS extreme 45xx and 36xx range switches.
 To install the BIER plug-in on LibreNMS
 - Copy bier.inc.php in /../includes/html/pages/device/
 - Copy BierController.php in /../app/Http/Controllers/Device/Tabs/
-- Edit file /../app/Http/Controllers/DeviceController.php
-- Add line 32
+- Edit file  /../app/View/Components/Device/PageTabs.php (old /../app/Http/Controllers/DeviceController.php )
+- Add line 48
 -      ...
        'bier' => \App\Http\Controllers\Device\Tabs\BierController::class,
        ...
