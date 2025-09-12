@@ -854,7 +854,7 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
     echo "<table class='tg'>";
     for ($i = 0; $i < 6; $i++) {
         echo "<tr>";
-        for ($j = $j4 ; $j < $unit3PortCount+$j4; $j=$j+2) {
+        for ($j = $j4 ; $j < $unit4PortCount+$j4; $j=$j+2) {
 // HAUT UNIT=4 //
 // Affiche le NUMERO de port du HAUT
             if ($i === 0) { 
