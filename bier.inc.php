@@ -6,12 +6,47 @@ use App\Models\PortVdsl;
 use LibreNMS\Config;
 use LibreNMS\Util\IP;
 use LibreNMS\Util\Number;
+use Illuminate\Support\Facades\DB;
 
 //class pour le presentation à la Bier
+#print '<style type="text/css">
+#.tg {
+#    border-collapse: collapse;
+#    border-spacing: 0;
+#    width: 100%;
+#}
+#.tg td {
+#    font-family: "Segoe UI", Arial, sans-serif !important;
+#    font-size: 16px !important;
+#    font-weight: 500;
+#    -webkit-font-smoothing: antialiased;
+#    -moz-osx-font-smoothing: grayscale;
+#    text-rendering: optimizeLegibility;
+#    padding: 8px 4px;
+#    border: 1px solid black;
+#    text-align: center;
+#    vertical-align: middle;
+#    overflow: visible !important;
+#    white-space: normal !important;
+#    word-break: break-word;
+#    min-width: 70px;
+#}
+#.tg td a {
+#    font-size: 16px !important;
+#    font-weight: 500 !important;
+#    text-decoration: none;
+#}
+#.box-desc {
+#    font-size: 15px !important;
+#    font-weight: 500 !important;
+#    line-height: 18px;
+#    margin: 0;
+#}
+#</style>';
 print '<style type="text/css">
 .tg  {border-collapse:collapse;border-spacing:0;}
 .tgfutur  {table-layout: fixed;width:100%;max-width: 500px;}
-.tg td{font-family:Arial,text-overflow:ellipsis sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;text-align:center;}
+.tg td{font-family:Arial, sans-sherif; text-overflow:ellipsis;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;text-align:center;}
 .tg tdfutur{overflow:hidden;white-space:nowrap;}
 </style>
 ';
@@ -102,11 +137,15 @@ if ($unit1PortCount > 0) {
 		echo "<td><p class=box-desc>" . substr($ports[$j]["ifAlias"], 0, 28) . "</p></td>";
 // Affiche le VLAN du port du HAUT
             } elseif ($i === 2) {
-	$vlans = dbFetchColumn(
-	    'SELECT vlan,untagged FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j]['port_id'], $device['device_id']]
-	);
+	$vlans = DB::table('ports_vlans as PV')
+	    ->join('vlans as V', function ($join) {
+	        $join->on('V.vlan_vlan', '=', 'PV.vlan')
+	             ->on('V.device_id', '=', 'PV.device_id');
+	    })
+	    ->where('PV.port_id', $ports[$j]['port_id'])
+	    ->where('PV.device_id', $device['device_id'])
+	    ->pluck('vlan')
+	    ->toArray();
 	$vlan_count = count($vlans);
 	//DEBUG	echo $vlan_count;
 	//DEBUG	echo " ";
@@ -151,15 +190,20 @@ if ($unit1PortCount > 0) {
 	$vlanColorTel = 'rgb(153, 153, 255) 100%';
 	}
 // Verifie si le port est untagged
-	$nativevlans = dbFetchRows(
-	    'SELECT vlan,untagged FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j]['port_id'], $device['device_id']]
-	);
+	$nativevlans = DB::table('ports_vlans as PV')
+	    ->join('vlans as V', function ($join) {
+	        $join->on('V.vlan_vlan', '=', 'PV.vlan')
+	             ->on('V.device_id', '=', 'PV.device_id');
+	    })
+	    ->where('PV.port_id', $ports[$j]['port_id'])
+	    ->where('PV.device_id', $device['device_id'])
+	    ->select('PV.vlan', 'PV.untagged')
+	    ->get()
+	    ->toArray();
 	$untaggedvlan = null;
 	foreach ($nativevlans as $row){
-		if ($row['untagged'] === 1){
-		$untaggedvlan = "<b>(U: ".$row['vlan'].")</b>";
+		if ((int)$row->untagged === 1) {
+		$untaggedvlan = "<b>(U: ".$row->vlan.")</b>";
 		break;
 		}
 	}
@@ -199,11 +243,15 @@ if ($unit1PortCount > 0) {
 // Affiche le VLAN de port du BAS 
             } elseif ($i === 3) {
         #        echo "<td>" . $ports[$j+1]["ifVlan"] . "</td>";
-	$vlans = dbFetchColumn(
-	    'SELECT vlan FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j+1]['port_id'], $device['device_id']]
-	);
+	$vlans = DB::table('ports_vlans as PV')
+	    ->join('vlans as V', function ($join) {
+	        $join->on('V.vlan_vlan', '=', 'PV.vlan')
+	             ->on('V.device_id', '=', 'PV.device_id');
+	    })
+	    ->where('PV.port_id', $ports[$j+1]['port_id'])
+	    ->where('PV.device_id', $device['device_id'])
+	    ->pluck('PV.vlan')
+	    ->toArray();
 	$vlan_count = count($vlans);
 //Couleur du port
 	$vlan = implode(', ', $vlans);
@@ -240,15 +288,20 @@ if ($unit1PortCount > 0) {
 	$vlanColorTel = 'rgb(153, 153, 255) 100%';
 	}
 // Verifie si le port est untagged
-	$nativevlans = dbFetchRows(
-	    'SELECT vlan,untagged FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j+1]['port_id'], $device['device_id']]
-	);
+	$nativevlans = DB::table('ports_vlans as PV')
+	    ->join('vlans as V', function ($join) {
+	        $join->on('V.vlan_vlan', '=', 'PV.vlan')
+	             ->on('V.device_id', '=', 'PV.device_id');
+	    })
+	    ->where('PV.port_id', $ports[$j+1]['port_id'])
+	    ->where('PV.device_id', $device['device_id'])
+	    ->select('PV.vlan', 'PV.untagged')
+	    ->get()
+	    ->toArray();
 	$untaggedvlan = null;
 	foreach ($nativevlans as $row){
-		if ($row['untagged'] === 1){
-		$untaggedvlan = "<b>(U: ".$row['vlan'].")</b>";
+		if ((int)$row->untagged === 1) {
+		$untaggedvlan = "<b>(U: ".$row->vlan.")</b>";
 		break;
 		}
 	}
@@ -373,13 +426,16 @@ if ($unit2PortCount != 0 ){ // START IF UNIT
                 echo "<td><p class=box-desc>" . substr($ports[$j]["ifAlias"], 0, 28) . "</p></td>";
 // Affiche le VLAN du port du HAUT
             } elseif ($i === 2) {
-	$vlans = dbFetchColumn(
-	    'SELECT vlan FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j]['port_id'], $device['device_id']]
-	);
+	$vlans = DB::table('ports_vlans as PV')
+	    ->join('vlans as V', function ($join) {
+	        $join->on('V.vlan_vlan', '=', 'PV.vlan')
+	             ->on('V.device_id', '=', 'PV.device_id');
+	    })
+	    ->where('PV.port_id', $ports[$j]['port_id'])
+	    ->where('PV.device_id', $device['device_id'])
+	    ->pluck('PV.vlan')
+	    ->toArray();
 	$vlan_count = count($vlans);
-#	echo "<td>";
 //Couleur du port
 	$vlan = implode(', ', $vlans);
 	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
@@ -415,15 +471,20 @@ if ($unit2PortCount != 0 ){ // START IF UNIT
 	$vlanColorTel = 'rgb(153, 153, 255) 100%';
 	}
 // Verifie si le port est untagged
-	$nativevlans = dbFetchRows(
-	    'SELECT vlan,untagged FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j]['port_id'], $device['device_id']]
-	);
+        $nativevlans = DB::table('ports_vlans as PV')
+            ->join('vlans as V', function ($join) {
+                $join->on('V.vlan_vlan', '=', 'PV.vlan')
+                     ->on('V.device_id', '=', 'PV.device_id');
+            })
+            ->where('PV.port_id', $ports[$j]['port_id'])
+            ->where('PV.device_id', $device['device_id'])
+            ->select('PV.vlan', 'PV.untagged')
+            ->get()
+            ->toArray();
 	$untaggedvlan = null;
 	foreach ($nativevlans as $row){
-		if ($row['untagged'] === 1){
-		$untaggedvlan = "<b>(U: ".$row['vlan'].")</b>";
+		if ((int)$row->untagged === 1) {
+		$untaggedvlan = "<b>(U: ".$row->vlan.")</b>";
 		break;
 		}
 	}
@@ -447,7 +508,6 @@ if ($unit2PortCount != 0 ){ // START IF UNIT
 		    echo '</a></span></p>';
 		} elseif ($vlan_count == 1 || $ports[$j]['ifVlan']) {
 		    echo "<td style='background: linear-gradient(315deg, $vlanColor 100%, $vlanColorTel)'>";
-		    #echo '<p class=box-desc><span class=blue>';
 		    echo 'VLAN: ';
 		    echo implode(', ', $vlans). "<br>";
 		    echo $untaggedvlan;
@@ -462,13 +522,16 @@ if ($unit2PortCount != 0 ){ // START IF UNIT
 // BAS UNIT=2 //
 // Affiche le VLAN de port du BAS 
             } elseif ($i === 3) {
-	$vlans = dbFetchColumn(
-	    'SELECT vlan FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j+1]['port_id'], $device['device_id']]
-	);
+        $vlans = DB::table('ports_vlans as PV')
+            ->join('vlans as V', function ($join) {
+                $join->on('V.vlan_vlan', '=', 'PV.vlan')
+                     ->on('V.device_id', '=', 'PV.device_id');
+            })
+            ->where('PV.port_id', $ports[$j+1]['port_id'])
+            ->where('PV.device_id', $device['device_id'])
+            ->pluck('PV.vlan')
+            ->toArray();
 	$vlan_count = count($vlans);
-#	echo "<td>";
 //Couleur du port
 	$vlan = implode(', ', $vlans);
 	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
@@ -504,15 +567,20 @@ if ($unit2PortCount != 0 ){ // START IF UNIT
 	$vlanColorTel = 'rgb(153, 153, 255) 100%';
 	}	
 // Verifie si le port est untagged
-	$nativevlans = dbFetchRows(
-	    'SELECT vlan,untagged FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j+1]['port_id'], $device['device_id']]
-	);
+        $nativevlans = DB::table('ports_vlans as PV')
+            ->join('vlans as V', function ($join) {
+                $join->on('V.vlan_vlan', '=', 'PV.vlan')
+                     ->on('V.device_id', '=', 'PV.device_id');
+            })
+            ->where('PV.port_id', $ports[$j+1]['port_id'])
+            ->where('PV.device_id', $device['device_id'])
+            ->select('PV.vlan', 'PV.untagged')
+            ->get()
+            ->toArray();
 	$untaggedvlan = null;
 	foreach ($nativevlans as $row){
-		if ($row['untagged'] === 1){
-		$untaggedvlan = "<b>(U: ".$row['vlan'].")</b>";
+		if ((int)$row->untagged === 1) {
+		$untaggedvlan = "<b>(U: ".$row->vlan.")</b>";
 		break;
 		}
 	}
@@ -630,13 +698,16 @@ if ($unit3PortCount != 0 ){ // START IF UNIT
                 echo "<td><p class=box-desc>" . substr($ports[$j]["ifAlias"], 0, 28) . "</p></td>";
 // Affiche le VLAN du port du HAUT
             } elseif ($i === 2) {
-	$vlans = dbFetchColumn(
-	    'SELECT vlan FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j]['port_id'], $device['device_id']]
-	);
+        $vlans = DB::table('ports_vlans as PV')
+            ->join('vlans as V', function ($join) {
+                $join->on('V.vlan_vlan', '=', 'PV.vlan')
+                     ->on('V.device_id', '=', 'PV.device_id');
+            })
+            ->where('PV.port_id', $ports[$j]['port_id'])
+            ->where('PV.device_id', $device['device_id'])
+            ->pluck('PV.vlan')
+            ->toArray();
 	$vlan_count = count($vlans);
-#	echo "<td>";
 //Couleur du port
 	$vlan = implode(', ', $vlans);
 	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
@@ -672,15 +743,20 @@ if ($unit3PortCount != 0 ){ // START IF UNIT
 	$vlanColorTel = 'rgb(153, 153, 255) 100%';
 	}
 // Verifie si le port est untagged
-	$nativevlans = dbFetchRows(
-	    'SELECT vlan,untagged FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j]['port_id'], $device['device_id']]
-	);
+        $nativevlans = DB::table('ports_vlans as PV')
+            ->join('vlans as V', function ($join) {
+                $join->on('V.vlan_vlan', '=', 'PV.vlan')
+                     ->on('V.device_id', '=', 'PV.device_id');
+            })
+            ->where('PV.port_id', $ports[$j]['port_id'])
+            ->where('PV.device_id', $device['device_id'])
+            ->select('PV.vlan', 'PV.untagged')
+            ->get()
+            ->toArray();
 	$untaggedvlan = null;
 	foreach ($nativevlans as $row){
-		if ($row['untagged'] === 1){
-		$untaggedvlan = "<b>(U: ".$row['vlan'].")</b>";
+		if ((int)$row->untagged === 1) {
+		$untaggedvlan = "<b>(U: ".$row->vlan.")</b>";
 		break;
 		}
 	}
@@ -704,7 +780,6 @@ if ($unit3PortCount != 0 ){ // START IF UNIT
 		    echo '</a></span></p>';
 		} elseif ($vlan_count == 1 || $ports[$j]['ifVlan']) {
 		    echo "<td style='background: linear-gradient(315deg, $vlanColor 100%, $vlanColorTel)'>";
-		    #echo '<p class=box-desc><span class=blue>';
 		    echo 'VLAN: ';
 		    echo implode(', ', $vlans). "<br>";
 		    echo $untaggedvlan;
@@ -719,13 +794,16 @@ if ($unit3PortCount != 0 ){ // START IF UNIT
 // BAS UNIT=3 //
 // Affiche le VLAN de port du BAS 
             } elseif ($i === 3) {
-	$vlans = dbFetchColumn(
-	    'SELECT vlan FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j+1]['port_id'], $device['device_id']]
-	);
+        $vlans = DB::table('ports_vlans as PV')
+            ->join('vlans as V', function ($join) {
+                $join->on('V.vlan_vlan', '=', 'PV.vlan')
+                     ->on('V.device_id', '=', 'PV.device_id');
+            })
+            ->where('PV.port_id', $ports[$j+1]['port_id'])
+            ->where('PV.device_id', $device['device_id'])
+            ->pluck('PV.vlan')
+            ->toArray();
 	$vlan_count = count($vlans);
-#	echo "<td>";
 //Couleur du port
 	$vlan = implode(', ', $vlans);
 	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
@@ -761,15 +839,20 @@ if ($unit3PortCount != 0 ){ // START IF UNIT
 	$vlanColorTel = 'rgb(153, 153, 255) 100%';
 	}	
 // Verifie si le port est untagged
-	$nativevlans = dbFetchRows(
-	    'SELECT vlan,untagged FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j+1]['port_id'], $device['device_id']]
-	);
+        $nativevlans = DB::table('ports_vlans as PV')
+            ->join('vlans as V', function ($join) {
+                $join->on('V.vlan_vlan', '=', 'PV.vlan')
+                     ->on('V.device_id', '=', 'PV.device_id');
+            })
+            ->where('PV.port_id', $ports[$j+1]['port_id'])
+            ->where('PV.device_id', $device['device_id'])
+            ->select('PV.vlan', 'PV.untagged')
+            ->get()
+            ->toArray();
 	$untaggedvlan = null;
 	foreach ($nativevlans as $row){
-		if ($row['untagged'] === 1){
-		$untaggedvlan = "<b>(U: ".$row['vlan'].")</b>";
+		if ((int)$row->untagged === 1) {
+		$untaggedvlan = "<b>(U: ".$row->vlan.")</b>";
 		break;
 		}
 	}
@@ -887,13 +970,16 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
                 echo "<td><p class=box-desc>" . substr($ports[$j]["ifAlias"], 0, 28) . "</p></td>";
 // Affiche le VLAN du port du HAUT
             } elseif ($i === 2) {
-	$vlans = dbFetchColumn(
-	    'SELECT vlan FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j]['port_id'], $device['device_id']]
-	);
+        $vlans = DB::table('ports_vlans as PV')
+            ->join('vlans as V', function ($join) {
+                $join->on('V.vlan_vlan', '=', 'PV.vlan')
+                     ->on('V.device_id', '=', 'PV.device_id');
+            })
+            ->where('PV.port_id', $ports[$j]['port_id'])
+            ->where('PV.device_id', $device['device_id'])
+            ->pluck('PV.vlan')
+            ->toArray();
 	$vlan_count = count($vlans);
-#	echo "<td>";
 //Couleur du port
 	$vlan = implode(', ', $vlans);
 	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
@@ -929,15 +1015,20 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 	$vlanColorTel = 'rgb(153, 153, 255) 100%';
 	}
 // Verifie si le port est untagged
-	$nativevlans = dbFetchRows(
-	    'SELECT vlan,untagged FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j]['port_id'], $device['device_id']]
-	);
+        $nativevlans = DB::table('ports_vlans as PV')
+            ->join('vlans as V', function ($join) {
+                $join->on('V.vlan_vlan', '=', 'PV.vlan')
+                     ->on('V.device_id', '=', 'PV.device_id');
+            })
+            ->where('PV.port_id', $ports[$j]['port_id'])
+            ->where('PV.device_id', $device['device_id'])
+            ->select('PV.vlan', 'PV.untagged')
+            ->get()
+            ->toArray();
 	$untaggedvlan = null;
 	foreach ($nativevlans as $row){
-		if ($row['untagged'] === 1){
-		$untaggedvlan = "<b>(U: ".$row['vlan'].")</b>";
+		if ((int)$row->untagged === 1) {
+		$untaggedvlan = "<b>(U: ".$row->vlan.")</b>";
 		break;
 		}
 	}
@@ -961,7 +1052,6 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 		    echo '</a></span></p>';
 		} elseif ($vlan_count == 1 || $ports[$j]['ifVlan']) {
 		    echo "<td style='background: linear-gradient(315deg, $vlanColor 100%, $vlanColorTel)'>";
-		    #echo '<p class=box-desc><span class=blue>';
 		    echo 'VLAN: ';
 		    echo implode(', ', $vlans). "<br>";
 		    echo $untaggedvlan;
@@ -976,13 +1066,16 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 // BAS UNIT=4 //
 // Affiche le VLAN de port du BAS 
             } elseif ($i === 3) {
-	$vlans = dbFetchColumn(
-	    'SELECT vlan FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j+1]['port_id'], $device['device_id']]
-	);
+        $vlans = DB::table('ports_vlans as PV')
+            ->join('vlans as V', function ($join) {
+                $join->on('V.vlan_vlan', '=', 'PV.vlan')
+                     ->on('V.device_id', '=', 'PV.device_id');
+            })
+            ->where('PV.port_id', $ports[$j+1]['port_id'])
+            ->where('PV.device_id', $device['device_id'])
+            ->pluck('PV.vlan')
+            ->toArray();
 	$vlan_count = count($vlans);
-#	echo "<td>";
 //Couleur du port
 	$vlan = implode(', ', $vlans);
 	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
@@ -1018,15 +1111,20 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 	$vlanColorTel = 'rgb(153, 153, 255) 100%';
 	}	
 // Verifie si le port est untagged
-	$nativevlans = dbFetchRows(
-	    'SELECT vlan,untagged FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j+1]['port_id'], $device['device_id']]
-	);
+        $nativevlans = DB::table('ports_vlans as PV')
+            ->join('vlans as V', function ($join) {
+                $join->on('V.vlan_vlan', '=', 'PV.vlan')
+                     ->on('V.device_id', '=', 'PV.device_id');
+            })
+            ->where('PV.port_id', $ports[$j+1]['port_id'])
+            ->where('PV.device_id', $device['device_id'])
+            ->select('PV.vlan', 'PV.untagged')
+            ->get()
+            ->toArray();
 	$untaggedvlan = null;
 	foreach ($nativevlans as $row){
-		if ($row['untagged'] === 1){
-		$untaggedvlan = "<b>(U: ".$row['vlan'].")</b>";
+		if ((int)$row->untagged === 1) {
+		$untaggedvlan = "<b>(U: ".$row->vlan.")</b>";
 		break;
 		}
 	}
@@ -1144,13 +1242,16 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
                 echo "<td><p class=box-desc>" . substr($ports[$j]["ifAlias"], 0, 28) . "</p></td>";
 // Affiche le VLAN du port du HAUT
             } elseif ($i === 2) {
-	$vlans = dbFetchColumn(
-	    'SELECT vlan FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j]['port_id'], $device['device_id']]
-	);
+        $vlans = DB::table('ports_vlans as PV')
+            ->join('vlans as V', function ($join) {
+                $join->on('V.vlan_vlan', '=', 'PV.vlan')
+                     ->on('V.device_id', '=', 'PV.device_id');
+            })
+            ->where('PV.port_id', $ports[$j]['port_id'])
+            ->where('PV.device_id', $device['device_id'])
+            ->pluck('PV.vlan')
+            ->toArray();
 	$vlan_count = count($vlans);
-#	echo "<td>";
 //Couleur du port
 	$vlan = implode(', ', $vlans);
 	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
@@ -1186,15 +1287,20 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 	$vlanColorTel = 'rgb(153, 153, 255) 100%';
 	}	
 // Verifie si le port est untagged
-	$nativevlans = dbFetchRows(
-	    'SELECT vlan,untagged FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j]['port_id'], $device['device_id']]
-	);
+        $nativevlans = DB::table('ports_vlans as PV')
+            ->join('vlans as V', function ($join) {
+                $join->on('V.vlan_vlan', '=', 'PV.vlan')
+                     ->on('V.device_id', '=', 'PV.device_id');
+            })
+            ->where('PV.port_id', $ports[$j]['port_id'])
+            ->where('PV.device_id', $device['device_id'])
+            ->select('PV.vlan', 'PV.untagged')
+            ->get()
+            ->toArray();
 	$untaggedvlan = null;
 	foreach ($nativevlans as $row){
-		if ($row['untagged'] === 1){
-		$untaggedvlan = "<b>(U: ".$row['vlan'].")</b>";
+		if ((int)$row->untagged === 1) {
+		$untaggedvlan = "<b>(U: ".$row->vlan.")</b>";
 		break;
 		}
 	}
@@ -1232,13 +1338,16 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 // BAS UNIT=0 //
 // Affiche le VLAN de port du BAS 
             } elseif ($i === 3) {
-	$vlans = dbFetchColumn(
-	    'SELECT vlan FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j+1]['port_id'], $device['device_id']]
-	);
+        $vlans = DB::table('ports_vlans as PV')
+            ->join('vlans as V', function ($join) {
+                $join->on('V.vlan_vlan', '=', 'PV.vlan')
+                     ->on('V.device_id', '=', 'PV.device_id');
+            })
+            ->where('PV.port_id', $ports[$j+1]['port_id'])
+            ->where('PV.device_id', $device['device_id'])
+            ->pluck('PV.vlan')
+            ->toArray();
 	$vlan_count = count($vlans);
-#	echo "<td>";
 //Couleur du port
 	$vlan = implode(', ', $vlans);
 	if (preg_match('/2[0-2][0-9][0-9]/', $vlan)) { //Vlan mb-per 
@@ -1274,15 +1383,20 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 	$vlanColorTel = 'rgb(153, 153, 255) 100%';
 	}	
 // Verifie si le port est untagged
-	$nativevlans = dbFetchRows(
-	    'SELECT vlan,untagged FROM `ports_vlans` AS PV, vlans AS V ' .
-	    'WHERE PV.`port_id`=? AND PV.`device_id`=? AND V.`vlan_vlan`=PV.vlan AND V.device_id = PV.device_id',
-	    [$ports[$j+1]['port_id'], $device['device_id']]
-	);
+        $nativevlans = DB::table('ports_vlans as PV')
+            ->join('vlans as V', function ($join) {
+                $join->on('V.vlan_vlan', '=', 'PV.vlan')
+                     ->on('V.device_id', '=', 'PV.device_id');
+            })
+            ->where('PV.port_id', $ports[$j+1]['port_id'])
+            ->where('PV.device_id', $device['device_id'])
+            ->select('PV.vlan', 'PV.untagged')
+            ->get()
+            ->toArray();
 	$untaggedvlan = null;
 	foreach ($nativevlans as $row){
-		if ($row['untagged'] === 1){
-		$untaggedvlan = "<b>(U: ".$row['vlan'].")</b>";
+		if ((int)$row->untagged === 1) {
+		$untaggedvlan = "<b>(U: ".$row->vlan.")</b>";
 		break;
 		}
 	}
