@@ -11,6 +11,12 @@ Tested on ERS extreme 45xx and 36xx range switches.
 To install the BIER plug-in on LibreNMS
 - Copy bier.inc.php in /../includes/html/pages/device/
 - Copy BierController.php in /../app/Http/Controllers/Device/Tabs/
+- Copy bier.blade.php in /../resources/views/device/tabs/
+- Edit file /../routes/web.php
+- Modifiy line 323 with : 'bier',
+-        ...
+-        foreach (['accesspoints', 'bier', 'capture', 'config', 'inventory', 'latency', 'mef', 'munin', 'nac', 'notes', 'printer', 'processes', 'services', 'tnmsne', 'vlans', 'vm'] as $tab) {
+-        ...
 - Edit file  /../app/View/Components/Device/PageTabs.php ( >>> old file /../app/Http/Controllers/DeviceController.php <<< )
 - Add line 48
 -      ...
