@@ -6,6 +6,7 @@ use App\Models\PortVdsl;
 use LibreNMS\Config;
 use LibreNMS\Util\IP;
 use LibreNMS\Util\Number;
+use LibreNMS\Util\Url;
 use Illuminate\Support\Facades\DB;
 
 //class pour le presentation à la Bier
@@ -53,7 +54,8 @@ print '<style type="text/css">
 
 // Lecture et mise en cache des ports
     global $port_index_cache;
-    $ports = DeviceCache::getPrimary()->ports()->orderBy('ifIndex')->isValid()->get();
+#    $ports = DeviceCache::getPrimary()->ports()->orderBy('ifIndex')->isValid()->get();
+    $ports = $device->ports()->orderBy('ifIndex')->isValid()->get();
     foreach ($ports as $key => $port) {
         $port_index_cache[$port['device_id']][$port['ifIndex']] = $port;
     }
@@ -116,18 +118,18 @@ if ($unit1PortCount > 0) {
 	            $port['hostname'] = $device['hostname'];
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
                     if ($port->ifAdminStatus == 'down') {
-                    echo '<td style="background-color:red;">' . generate_port_link($port, $ifName). "</td>";
+                    echo '<td style="background-color:red;">' . Url::portLink($port, $ifName). "</td>";
         	    }else{
-                        echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ifName). "</td>";
+                        echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ifName). "</td>";
 		    	}
 		}else{
 		$port=$ports[$j];
 	        $port['hostname'] = $device['hostname'];
                 if ($port->ifAdminStatus == 'down') {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
-		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+		echo '<td style="background-color:red;">' . Url::portLink($port, $ports[$j]['ifName']). "</td>";
 		}else{	
-			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ports[$j]['ifName']). "</td>";
 			}
 		}
 // Affiche le NOM du port du HAUT
@@ -211,7 +213,8 @@ if ($unit1PortCount > 0) {
 		if ($vlan_count > 2) {
 		    echo "<td style='background: linear-gradient(315deg, $vlanColor 50%, $vlanColorTel)'>";
 		    echo '<p class=box-desc><span class=purple><a href="';
-		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
+#		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
+		    echo route('device.vlans', ['device' => (int) $device['device_id']]);
 		    echo '" title="';
 		    echo implode(', ', $vlans);
 		    echo '">VLANs: ';
@@ -309,7 +312,8 @@ if ($unit1PortCount > 0) {
 		if ($vlan_count > 2) {
 		    echo "<td style='background: linear-gradient(315deg, $vlanColor 50%, $vlanColorTel)'>";
 		    echo '<p class=box-desc><span class=purple><a href="';
-		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
+		    echo route('device.vlans', ['device' => (int) $device['device_id']]);
+#		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
 		    echo '" title="';
 		    echo implode(', ', $vlans);
 		    echo '">VLANs: ';
@@ -360,18 +364,18 @@ if ($unit1PortCount > 0) {
 	            $port['hostname'] = $device['hostname'];
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
                     if ($port->ifAdminStatus == 'down') {
-                    echo '<td style="background-color:red;">' . generate_port_link($port, $ifName). "</td>";
+                    echo '<td style="background-color:red;">' . Url::portLink($port, $ifName). "</td>";
         	    }else{
-                        echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ifName). "</td>";
+                        echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ifName). "</td>";
 		    	}
         	}else{
 		$port=$ports[$j+1];
 	        $port['hostname'] = $device['hostname'];
                 if ($port->ifAdminStatus == 'down') {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
-		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
+		echo '<td style="background-color:red;">' . Url::portLink($port, $ports[$j+1]['ifName']). "</td>";
 		}else{	
-			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ports[$j+1]['ifName']). "</td>";
 			}
 		}
             }
@@ -407,18 +411,18 @@ if ($unit2PortCount != 0 ){ // START IF UNIT
 	            $port['hostname'] = $device['hostname'];
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
                     if ($port->ifAdminStatus == 'down') {
-                    echo '<td style="background-color:red;">' . generate_port_link($port, $ifName). "</td>";
+                    echo '<td style="background-color:red;">' . Url::portLink($port, $ifName). "</td>";
         	    }else{
-                        echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ifName). "</td>";
+                        echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ifName). "</td>";
 		    	}
         	}else{
 		$port=$ports[$j];
 	        $port['hostname'] = $device['hostname'];
                 if ($port->ifAdminStatus == 'down') {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
-		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+		echo '<td style="background-color:red;">' . Url::portLink($port, $ports[$j]['ifName']). "</td>";
 		}else{	
-			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ports[$j]['ifName']). "</td>";
 			}
 		}
 // Affiche le NOM du port du HAUT
@@ -492,7 +496,8 @@ if ($unit2PortCount != 0 ){ // START IF UNIT
 		if ($vlan_count > 2) {
 		    echo "<td style='background: linear-gradient(315deg, $vlanColor 50%, $vlanColorTel)'>";
 		    echo '<p class=box-desc><span class=purple><a href="';
-		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
+		    echo route('device.vlans', ['device' => (int) $device['device_id']]);
+#		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
 		    echo '" title="';
 		    echo implode(', ', $vlans);
 		    echo '">VLANs: ';
@@ -588,7 +593,8 @@ if ($unit2PortCount != 0 ){ // START IF UNIT
 		if ($vlan_count > 2) {
 		    echo "<td style='background: linear-gradient(315deg, $vlanColor 50%, $vlanColorTel)'>";
 		    echo '<p class=box-desc><span class=purple><a href="';
-		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
+		    echo route('device.vlans', ['device' => (int) $device['device_id']]);
+#		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
 		    echo '" title="';
 		    echo implode(', ', $vlans);
 		    echo '">VLANs: ';
@@ -631,18 +637,18 @@ if ($unit2PortCount != 0 ){ // START IF UNIT
 	            $port['hostname'] = $device['hostname'];
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
                     if ($port->ifAdminStatus == 'down') {
-                    echo '<td style="background-color:red;">' . generate_port_link($port, $ifName). "</td>";
+                    echo '<td style="background-color:red;">' . Url::portLink($port, $ifName). "</td>";
         	    }else{
-                        echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ifName). "</td>";
+                        echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ifName). "</td>";
 		    	}
         	}else{
 		$port=$ports[$j+1];
 	        $port['hostname'] = $device['hostname'];
                 if ($port->ifAdminStatus == 'down') {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
-		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
+		echo '<td style="background-color:red;">' . Url::portLink($port, $ports[$j+1]['ifName']). "</td>";
 		}else{	
-			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ports[$j+1]['ifName']). "</td>";
 			}
 		}
             }
@@ -679,18 +685,18 @@ if ($unit3PortCount != 0 ){ // START IF UNIT
 	            $port['hostname'] = $device['hostname'];
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
                     if ($port->ifAdminStatus == 'down') {
-                    echo '<td style="background-color:red;">' . generate_port_link($port, $ifName). "</td>";
+                    echo '<td style="background-color:red;">' . Url::portLink($port, $ifName). "</td>";
         	    }else{
-                        echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ifName). "</td>";
+                        echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ifName). "</td>";
 		    	}
         	}else{
 		$port=$ports[$j];
 	        $port['hostname'] = $device['hostname'];
                 if ($port->ifAdminStatus == 'down') {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
-		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+		echo '<td style="background-color:red;">' . Url::portLink($port, $ports[$j]['ifName']). "</td>";
 		}else{	
-			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ports[$j]['ifName']). "</td>";
 			}
 		}
 // Affiche le NOM du port du HAUT
@@ -764,7 +770,8 @@ if ($unit3PortCount != 0 ){ // START IF UNIT
 		if ($vlan_count > 2) {
 		    echo "<td style='background: linear-gradient(315deg, $vlanColor 50%, $vlanColorTel)'>";
 		    echo '<p class=box-desc><span class=purple><a href="';
-		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
+		    echo route('device.vlans', ['device' => (int) $device['device_id']]);
+#		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
 		    echo '" title="';
 		    echo implode(', ', $vlans);
 		    echo '">VLANs: ';
@@ -860,7 +867,8 @@ if ($unit3PortCount != 0 ){ // START IF UNIT
 		if ($vlan_count > 2) {
 		    echo "<td style='background: linear-gradient(315deg, $vlanColor 50%, $vlanColorTel)'>";
 		    echo '<p class=box-desc><span class=purple><a href="';
-		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
+		    echo route('device.vlans', ['device' => (int) $device['device_id']]);
+#		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
 		    echo '" title="';
 		    echo implode(', ', $vlans);
 		    echo '">VLANs: ';
@@ -903,18 +911,18 @@ if ($unit3PortCount != 0 ){ // START IF UNIT
 	            $port['hostname'] = $device['hostname'];
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
                     if ($port->ifAdminStatus == 'down') {
-                    echo '<td style="background-color:red;">' . generate_port_link($port, $ifName). "</td>";
+                    echo '<td style="background-color:red;">' . Url::portLink($port, $ifName). "</td>";
         	    }else{
-                        echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ifName). "</td>";
+                        echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ifName). "</td>";
 		    	}
         	}else{
 		$port=$ports[$j+1];
 	        $port['hostname'] = $device['hostname'];
                 if ($port->ifAdminStatus == 'down') {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
-		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
+		echo '<td style="background-color:red;">' . Url::portLink($port, $ports[$j+1]['ifName']). "</td>";
 		}else{	
-			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ports[$j+1]['ifName']). "</td>";
 			}
 		}
             }
@@ -951,18 +959,18 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 	            $port['hostname'] = $device['hostname'];
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
                     if ($port->ifAdminStatus == 'down') {
-                    echo '<td style="background-color:red;">' . generate_port_link($port, $ifName). "</td>";
+                    echo '<td style="background-color:red;">' . Url::portLink($port, $ifName). "</td>";
         	    }else{
-                        echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ifName). "</td>";
+                        echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ifName). "</td>";
 		    	}
         	}else{
 		$port=$ports[$j];
 	        $port['hostname'] = $device['hostname'];
                 if ($port->ifAdminStatus == 'down') {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
-		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+		echo '<td style="background-color:red;">' . Url::portLink($port, $ports[$j]['ifName']). "</td>";
 		}else{	
-			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ports[$j]['ifName']). "</td>";
 			}
 		}
 // Affiche le NOM du port du HAUT
@@ -1036,7 +1044,8 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 		if ($vlan_count > 2) {
 		    echo "<td style='background: linear-gradient(315deg, $vlanColor 50%, $vlanColorTel)'>";
 		    echo '<p class=box-desc><span class=purple><a href="';
-		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
+		    echo route('device.vlans', ['device' => (int) $device['device_id']]);
+#		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
 		    echo '" title="';
 		    echo implode(', ', $vlans);
 		    echo '">VLANs: ';
@@ -1132,7 +1141,8 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 		if ($vlan_count > 2) {
 		    echo "<td style='background: linear-gradient(315deg, $vlanColor 50%, $vlanColorTel)'>";
 		    echo '<p class=box-desc><span class=purple><a href="';
-		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
+		    echo route('device.vlans', ['device' => (int) $device['device_id']]);
+#		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
 		    echo '" title="';
 		    echo implode(', ', $vlans);
 		    echo '">VLANs: ';
@@ -1175,18 +1185,18 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 	            $port['hostname'] = $device['hostname'];
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
                     if ($port->ifAdminStatus == 'down') {
-                    echo '<td style="background-color:red;">' . generate_port_link($port, $ifName). "</td>";
+                    echo '<td style="background-color:red;">' . Url::portLink($port, $ifName). "</td>";
         	    }else{
-                        echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ifName). "</td>";
+                        echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ifName). "</td>";
 		    	}
         	}else{
 		$port=$ports[$j+1];
 	        $port['hostname'] = $device['hostname'];
                 if ($port->ifAdminStatus == 'down') {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
-		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
+		echo '<td style="background-color:red;">' . Url::portLink($port, $ports[$j+1]['ifName']). "</td>";
 		}else{	
-			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ports[$j+1]['ifName']). "</td>";
 			}
 		}
             }
@@ -1223,18 +1233,18 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 	            $port['hostname'] = $device['hostname'];
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
                     if ($port->ifAdminStatus == 'down') {
-                    echo '<td style="background-color:red;">' . generate_port_link($port, $ifName). "</td>";
+                    echo '<td style="background-color:red;">' . Url::portLink($port, $ifName). "</td>";
         	    }else{
-                        echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ifName). "</td>";
+                        echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ifName). "</td>";
 		    	}
         	}else{
 		$port=$ports[$j];
 	        $port['hostname'] = $device['hostname'];
                 if ($port->ifAdminStatus == 'down') {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
-		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+		echo '<td style="background-color:red;">' . Url::portLink($port, $ports[$j]['ifName']). "</td>";
 		}else{	
-			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ports[$j]['ifName']). "</td>";
 			}
 		}
 // Affiche le NOM du port du HAUT
@@ -1308,7 +1318,8 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 		if ($vlan_count > 2) {
 		    echo "<td style='background: linear-gradient(315deg, $vlanColor 50%, $vlanColorTel)'>";
 		    echo '<p class=box-desc><span class=purple><a href="';
-		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
+		    echo route('device.vlans', ['device' => (int) $device['device_id']]);
+#		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
 		    echo '" title="';
 		    echo implode(', ', $vlans);
 		    echo '">VLANs: ';
@@ -1404,7 +1415,8 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
 		if ($vlan_count > 2) {
 		    echo "<td style='background: linear-gradient(315deg, $vlanColor 50%, $vlanColorTel)'>";
 		    echo '<p class=box-desc><span class=purple><a href="';
-		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
+		    echo route('device.vlans', ['device' => (int) $device['device_id']]);
+#		    echo \LibreNMS\Util\Url::deviceUrl((int) $device['device_id'], ['tab' => 'vlans']);
 		    echo '" title="';
 		    echo implode(', ', $vlans);
 		    echo '">VLANs: ';
@@ -1446,18 +1458,18 @@ if ($unit4PortCount != 0 ){ // START IF UNIT
                     $port['hostname'] = $device['hostname'];
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
                     if ($port->ifAdminStatus == 'down') {
-                    echo '<td style="background-color:red;">' . generate_port_link($port, $ifName). "</td>";
+                    echo '<td style="background-color:red;">' . Url::portLink($port, $ifName). "</td>";
         	    }else{
-                        echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ifName). "</td>";
+                        echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ifName). "</td>";
 		    	}
                 }else{
         	$port=$ports[$j+1];
 	        $port['hostname'] = $device['hostname'];
                 if ($port->ifAdminStatus == 'down') {
 	// Pour plus de lisibilité : Ajout de  background-color: white; ligne 822 ../librenms/html/css/styles.css 
-		echo '<td style="background-color:red;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
+		echo '<td style="background-color:red;">' . Url::portLink($port, $ports[$j+1]['ifName']). "</td>";
 		}else{	
-			echo '<td style="background-color:#008a0c;">' . generate_port_link($port, $ports[$j+1]['ifName']). "</td>";
+			echo '<td style="background-color:#008a0c;">' . Url::portLink($port, $ports[$j+1]['ifName']). "</td>";
 			}
 		}
 	    }

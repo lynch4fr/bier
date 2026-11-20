@@ -1,34 +1,10 @@
 <?php
-/**
- * OverviewController.php
- *
- * -Description-
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * @link       https://www.librenms.org
- *
- * @copyright  2020 Tony Murray
- * @author     Tony Murray <murraytony@gmail.com>
- */
 
 namespace App\Http\Controllers\Device\Tabs;
 
 use App\Models\Device;
 use Illuminate\Http\Request;
 use LibreNMS\Interfaces\UI\DeviceTab;
-use Session;
 
 class BierController implements DeviceTab
 {
@@ -54,24 +30,24 @@ class BierController implements DeviceTab
 
     public function data(Device $device, Request $request): array
     {
-        return [];
-    }
+        $legacyFile = base_path('includes/html/pages/device/bier.inc.php');
 
-    public static function setGraphWidth($graph = [])
-    {
-        // possibly the wrong spot for this
-        if ($screen_width = Session::get('screen_width')) {
-            if ($screen_width > 970) {
-                $graph['width'] = round(($screen_width - 390) / 2, 0);
-                $graph['height'] = round($graph['width'] / 3);
-
-                return $graph;
-            }
-
-            $graph['width'] = $screen_width - 190;
-            $graph['height'] = round($graph['width'] / 3);
+        if (!is_file($legacyFile)) {
+            throw new \RuntimeException('Fichier bier.inc.php introuvable');
         }
 
-        return $graph;
+        ob_start();
+
+        try {
+            require $legacyFile;
+            $html = ob_get_clean();
+        } catch (\Throwable $e) {
+            ob_end_clean();
+            throw $e;
+        }
+
+        return [
+            'html' => $html,
+        ];
     }
 }
