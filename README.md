@@ -27,5 +27,6 @@ To install the BIER plug-in on LibreNMS
   - Add : lnms config:set webui.custom_css.+ css/custom/styles.css
   - cp style.css to /opt/librenms/html/css/custom
 - Execute ./validate and ./daily
+- Execute php artisan optimize:clear
 - Bier is available via Device/Tab -> Bier or URL : https://librenms.local.fr/device/xyz/bier
   
